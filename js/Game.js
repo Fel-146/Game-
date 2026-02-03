@@ -17,6 +17,47 @@ export class Game {
         this.validThrowCells = [];
     }
 
+    // Cập nhật tham số nhận vào: thêm viewMode
+    init(playersData, viewMode = 'pc') {
+        this.players = playersData.map(data => {
+            // ... (Code tạo player giữ nguyên)
+            const p = new Player(data.id, data.name, data.color);
+            p.avatar = data.avatar;
+            return p;
+        });
+
+        // --- XỬ LÝ CHẾ ĐỘ HIỂN THỊ ---
+        this.applyViewMode(viewMode);
+
+        this.board.generateMap();
+        this.board.spawnPlayers(this.players);
+
+        setTimeout(() => {
+            this.render(); 
+            this.setupBoardClicks();
+            this.updateHUD(); 
+        }, 100);
+    }
+
+    // --- HÀM MỚI: ÁP DỤNG CSS ---
+    applyViewMode(mode) {
+        const gameScreen = document.getElementById('game-screen');
+        const boardEl = document.getElementById('game-board');
+
+        // Xóa class cũ nếu có
+        gameScreen.classList.remove('mode-mobile', 'mode-pc');
+        boardEl.classList.remove('board-mobile');
+
+        if (mode === 'mobile') {
+            // Thêm class mobile
+            gameScreen.classList.add('mode-mobile');
+            boardEl.classList.add('board-mobile');
+            console.log("-> Đã kích hoạt chế độ Mobile");
+        } else {
+            gameScreen.classList.add('mode-pc');
+        }
+    }
+
     init(playersData) {
         this.players = playersData.map(data => {
             const p = new Player(data.id, data.name, data.color);

@@ -300,3 +300,57 @@
     50% { opacity: 0.5; transform: scale(1.1); }
     100% { opacity: 0; transform: scale(1); }
 }
+
+/* --- CHẾ ĐỘ MOBILE (RESPONSIVE) --- */
+
+/* 1. Thay đổi layout màn hình game thành cột dọc */
+.mode-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 50px; /* Chừa chỗ cho scroll */
+}
+
+/* Ẩn bớt các panel bên cạnh hoặc xếp chúng xuống dưới */
+.mode-mobile .left-panel, 
+.mode-mobile .right-panel {
+    width: 95%; /* Chiếm full chiều ngang màn hình đt */
+    margin-bottom: 10px;
+    order: 2; /* Đẩy xuống dưới bàn cờ */
+}
+
+/* Đưa bàn cờ lên đầu */
+.mode-mobile #game-board-container {
+    order: 1;
+    margin-bottom: 15px;
+}
+
+/* 2. Thu nhỏ bàn cờ */
+.board-mobile {
+    /* Thay vì cố định 600px, ta dùng đơn vị tương đối */
+    width: 95vw !important;  /* 95% chiều rộng màn hình */
+    height: 95vw !important; /* Vuông vức theo chiều rộng */
+    max-width: 400px;        /* Không to quá 400px */
+    max-height: 400px;
+}
+
+/* 3. Điều chỉnh ô Grid trong mobile */
+.board-mobile .grid-cell {
+    border-width: 1px; /* Viền mỏng lại */
+}
+
+/* Icon nhân vật/vật phẩm nhỏ lại */
+.board-mobile .player-token,
+.board-mobile .item-token,
+.board-mobile .crate-token {
+    width: 80% !important;
+    height: 80% !important;
+    font-size: 1.2rem; /* Giảm cỡ chữ icon */
+}
+
+/* Hiệu ứng nổ nhỏ lại */
+.board-mobile .explosion-flash {
+    width: 100% !important;
+    height: 100% !important;
+}

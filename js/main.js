@@ -20,9 +20,19 @@ const avatarPlayerName = document.getElementById('avatar-player-name');
 // Khởi tạo đối tượng Game
 const game = new Game();
 
+// Thêm biến global để lưu chế độ (Mặc định là PC)
+let selectedViewMode = 'pc'; 
+
 // --- 1. SỰ KIỆN: TỪ SETUP SANG CHỌN AVATAR ---
 btnToAvatar.addEventListener('click', () => {
     totalPlayers = parseInt(document.getElementById('player-count').value);
+    
+    // LẤY GIÁ TRỊ CHẾ ĐỘ TỪ HTML (Nếu có element này)
+    const viewModeEl = document.getElementById('view-mode');
+    if (viewModeEl) {
+        selectedViewMode = viewModeEl.value;
+    }
+
     playersData = [];
     currentSetupIndex = 0;
 
@@ -69,8 +79,10 @@ function updateAvatarHeader() {
 // --- 3. LOGIC VÀO GAME ---
 function startGame() {
     switchScreen(screenAvatar, screenGame);
-    // Gọi hàm init của Game.js
-    game.init(playersData);
+    
+    // CẬP NHẬT QUAN TRỌNG: Truyền selectedViewMode vào hàm init
+    console.log("-> Bắt đầu game với chế độ:", selectedViewMode);
+    game.init(playersData, selectedViewMode);
 }
 
 function switchScreen(from, to) {
@@ -84,7 +96,7 @@ function switchScreen(from, to) {
 
 // --- 4. CÁC SỰ KIỆN TRONG GAME (NÚT BẤM) ---
 
-// Nút Kết thúc lượt (Cập nhật: Thêm log và check isProcessing)
+// Nút Kết thúc lượt
 document.getElementById('btn-end-turn').addEventListener('click', () => {
     if (game.isProcessing) return; // Chặn nếu đang xử lý animation
     console.log("-> Bấm nút Kết Thúc Lượt");
@@ -139,8 +151,12 @@ const weaponDisplay = document.getElementById('weapon-display-area');
 const modalWeapon = document.getElementById('modal-weapon-info');
 const closeWeapon = document.getElementById('close-weapon');
 
-weaponDisplay.addEventListener('click', () => game.showWeaponDetails());
-closeWeapon.addEventListener('click', () => modalWeapon.classList.add('hidden'));
+if (weaponDisplay) {
+    weaponDisplay.addEventListener('click', () => game.showWeaponDetails());
+}
+if (closeWeapon) {
+    closeWeapon.addEventListener('click', () => modalWeapon.classList.add('hidden'));
+}
 
 // Đóng modal khi click ra ngoài
 window.addEventListener('click', (e) => {
