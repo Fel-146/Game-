@@ -464,8 +464,8 @@ export class Game {
                 if (attacker.hasEffect(WEAPON_EFFECTS.LIFESTEAL?.code)) {
                     if (Math.random() < 0.3) {
                         if (attacker.hp < attacker.maxHp) {
-                            attacker.hp = Math.min(attacker.hp + 1, attacker.maxHp);
-                            this.board.showFloatingText(attacker.x, attacker.y, `+1 HP`, 'heal');
+                            attacker.hp = Math.min(attacker.hp + 5, attacker.maxHp);
+                            this.board.showFloatingText(attacker.x, attacker.y, `+5 HP`, 'heal');
                         }
                     }
                 }

@@ -45,12 +45,12 @@ export const WEAPONS = {
     },
     PYTHON: { 
         id: 'python', name: "Colt Python", type: 'WEAPON', rarity: 'COMMON',
-        range: 5, damage: 10, mag: 0, maxMag: 6, cost: 1, accuracy: 0.9, mobility: 4,
+        range: 5, damage: 10, mag: 0, maxMag: 6, cost: 1, accuracy: 0.8, mobility: 4,
         img: 'https://i.ibb.co/FbP0MPNJ/Pistol-Phyton.png',
     },
     USP: { 
         id: 'usp', name: "USP", type: 'WEAPON', rarity: 'COMMON',
-        range: 4, damage: 10, mag: 0, maxMag: 12, cost: 1, accuracy: 0.85, mobility: 5,
+        range: 4, damage: 10, mag: 0, maxMag: 12, cost: 1, accuracy: 0.75, mobility: 5,
         img: 'https://i.ibb.co/ynJhGh1X/Pistol-USP.png',
     },
     DEAGLE: { 
@@ -62,22 +62,22 @@ export const WEAPONS = {
     // --- RIFLE ---
     M4A1: { 
         id: 'm4a1', name: "M4A1", type: 'WEAPON', rarity: 'COMMON',
-        range: 6, damage: 20, mag: 0, maxMag: 30, cost: 3, accuracy: 0.8, mobility: 4,
+        range: 6, damage: 20, mag: 0, maxMag: 30, cost: 3, accuracy: 0.7, mobility: 4,
         img: 'https://i.ibb.co/LzWZjtvj/Rifle-M4-A1.png',
     },
     AK47: { 
         id: 'ak47', name: "AK-47", type: 'WEAPON', rarity: 'COMMON',
-        range: 7, damage: 25, mag: 0, maxMag: 30, cost: 3, accuracy: 0.65, mobility: 3, // Giật mạnh
+        range: 7, damage: 25, mag: 0, maxMag: 30, cost: 3, accuracy: 0.55, mobility: 3, // Giật mạnh
         img: 'https://i.ibb.co/wNHrY14f/Rifle-AK47.png',
     },
     SCAR: { 
         id: 'scar', name: "SCAR Heavy", type: 'WEAPON', rarity: 'COMMON',
-        range: 7, damage: 15, mag: 0, maxMag: 20, cost: 2, accuracy: 0.85, mobility: 3,
+        range: 7, damage: 15, mag: 0, maxMag: 20, cost: 2, accuracy: 0.75, mobility: 3,
         img: 'https://i.ibb.co/5hZ0F5pz/Rifle-SCAR-Heavy.png',
     },
     GALIL: { 
         id: 'galil', name: "Galil ACE", type: 'WEAPON', rarity: 'COMMON',
-        range: 6, damage: 20, mag: 0, maxMag: 35, cost: 3, accuracy: 0.75, mobility: 4,
+        range: 6, damage: 20, mag: 0, maxMag: 35, cost: 3, accuracy: 0.65, mobility: 4,
         img: 'https://i.ibb.co/Sw16X2Gz/Galil-ACE.png',
     },
 
@@ -89,41 +89,41 @@ export const WEAPONS = {
     },
     MP5: { 
         id: 'mp5', name: "MP5", type: 'WEAPON', rarity: 'COMMON',
-        range: 4, damage: 15, mag: 0, maxMag: 30, cost: 2, accuracy: 0.7, mobility: 4, // Rất nhanh
+        range: 4, damage: 15, mag: 0, maxMag: 30, cost: 2, accuracy: 0.5, mobility: 4, // Rất nhanh
         img: 'https://i.ibb.co/5hSJMddp/SMG-MP5.png',
     },
 
     // --- MG (Súng máy: Nặng, Đạn nhiều) ---
     GATLING: { 
         id: 'gatling', name: "Gatling Gun", type: 'WEAPON', rarity: 'COMMON',
-        range: 5, damage: 15, mag: 0, maxMag: 150, cost: 4, accuracy: 0.5, mobility: 1, // Đi siêu chậm
+        range: 5, damage: 15, mag: 0, maxMag: 150, cost: 4, accuracy: 0.4, mobility: 1, // Đi siêu chậm
         img: 'https://i.ibb.co/RpgJDCqJ/GATLINGGUN.png',
     },
 
     // --- SNIPER ---
     AWM: { 
         id: 'awm', name: "AWM", type: 'WEAPON', rarity: 'COMMON',
-        range: 10, damage: 60, mag: 0, maxMag: 5, cost: 2, accuracy: 0.9, mobility: 2,
+        range: 10, damage: 60, mag: 0, maxMag: 5, cost: 2, accuracy: 0.8, mobility: 2,
         img: 'https://i.ibb.co/Lht66xvx/Sniper-AWM.png',
     },
 
     // --- SHOTGUN ---
     XM1014: { 
         id: 'xm1014', name: "XM1014", type: 'WEAPON', rarity: 'COMMON',
-        range: 2, damage: 40, mag: 0, maxMag: 6, cost: 2, accuracy: 0.8, mobility: 4,
+        range: 2, damage: 40, mag: 0, maxMag: 6, cost: 2, accuracy: 0.7, mobility: 4,
         img: 'https://i.ibb.co/20b9c1rC/Shotgun-XM1014.png',
     },
 
     // --- MELEE ---
     KNIFE: { 
         id: 'knife', id2: 'knife', name: "Knife", type: 'WEAPON', rarity: 'COMMON',
-        range: 1, damage: 25, mag: 0, maxMag: 0, cost: 0, accuracy: 1.0, mobility: 5,
+        range: 1, damage: 25, mag: 0, maxMag: 0, cost: 0, accuracy: 0.8, mobility: 5,
         attacksPerTurn: 2, 
         img: 'https://i.ibb.co/931hRGSh/Melee-Knife.png'
     },
     SHOVEL: { 
         id: 'shovel', id2: 'knife', name: "Shovel", type: 'WEAPON', rarity: 'COMMON',
-        range: 1, damage: 30, mag: 0, maxMag: 0, cost: 0, accuracy: 0.9, mobility: 4,
+        range: 1, damage: 30, mag: 0, maxMag: 0, cost: 0, accuracy: 0.7, mobility: 4,
         attacksPerTurn: 1, img: 'https://i.ibb.co/DPLBZn1r/SHOVEL-BI.png',
         effects: [ WEAPON_EFFECTS.KNOCKBACK ]
     },
@@ -138,31 +138,31 @@ export const WEAPONS = {
     },
     AK47_GOLD: { 
         id: 'ak47_gold', name: "AK-47 Gold", type: 'WEAPON', rarity: 'RARE',
-        range: 7, damage: 25, mag: 0, maxMag: 30, cost: 3, accuracy: 0.65, mobility: 3,
+        range: 7, damage: 25, mag: 0, maxMag: 30, cost: 3, accuracy: 0.55, mobility: 3,
         img: 'https://i.ibb.co/3YhcYhS1/RIFLE-AK-47-Gold.png',
         effects: [ WEAPON_EFFECTS.PIERCE ] // Xuyên giáp mạnh
     },
     M4A1_GOLD: { 
         id: 'm4a1_gold', name: "M4A1-Gold", type: 'WEAPON', rarity: 'RARE',
-        range: 6, damage: 20, mag: 0, maxMag: 30, cost: 3, accuracy: 0.8, mobility: 4,
+        range: 6, damage: 20, mag: 0, maxMag: 30, cost: 3, accuracy: 0.7, mobility: 4,
         img: 'https://i.ibb.co/mCc2zFLH/M4-A1-GOLD.png',
         effects: [ WEAPON_EFFECTS.LUCKY ] // Tỉ lệ hồi đạn cao
     },
     GATLING_GOLD: { 
         id: 'gatling_gold', name: "Gatling Gold", type: 'WEAPON', rarity: 'RARE',
-        range: 5, damage: 15, mag: 0, maxMag: 150, cost: 4, accuracy: 0.5, mobility: 1,
+        range: 5, damage: 15, mag: 0, maxMag: 150, cost: 4, accuracy: 0.4, mobility: 1,
         img: 'https://i.ibb.co/ZR7w5mZs/MG-Gatling-Gun-Gold.png',
         debuff: { type: 'CRIPPLE', chance: 0.3, duration: 1, val: 0 }
     },
     BARRET_M82A1: { 
         id: 'barret', name: "Barrett M82A1", type: 'WEAPON', rarity: 'RARE',
-        range: 12, damage: 90, mag: 0, maxMag: 5, cost: 3, accuracy: 0.95, mobility: 1, // Bắn tốn 2 đạn/lượt
+        range: 12, damage: 90, mag: 0, maxMag: 5, cost: 3, accuracy: 0.85, mobility: 1, // Bắn tốn 2 đạn/lượt
         img: 'https://i.ibb.co/nskm1K5b/BARRETT-M82-A1.png',
         effects: [ WEAPON_EFFECTS.WALLBANG ]
     },
     HUNTING_KNIFE: { 
         id: 'hunting_knife', id2: 'knife', name: "Hunting Knife", type: 'WEAPON', rarity: 'RARE',
-        range: 1, damage: 25, mag: 0, maxMag: 0, cost: 0, accuracy: 1.0, mobility: 5,
+        range: 1, damage: 25, mag: 0, maxMag: 0, cost: 0, accuracy: 0.9, mobility: 5,
         attacksPerTurn: 2,
         img: 'https://i.ibb.co/XZQRbF5H/Melee-Hunting-Knife.png',
         debuff: { type: 'BLEED', chance: 1.0, duration: 3, val: 3 } // Chém là chảy máu
@@ -172,26 +172,26 @@ export const WEAPONS = {
 
     SCAR_RED: { 
         id: 'scar_red', name: "SCAR Red Dragon", type: 'WEAPON', rarity: 'EPIC',
-        range: 8, damage: 15, mag: 0, maxMag: 20, cost: 2, accuracy: 0.85, mobility: 3,
+        range: 8, damage: 15, mag: 0, maxMag: 20, cost: 2, accuracy: 0.75, mobility: 3,
         img: 'https://i.ibb.co/VWL4Gk6Q/SCAR-HEAVY-RED-DRAGON-BI.png', 
         debuff: { type: 'PANIC', chance: 0.3, duration: 2, val: 3 } // Tầm bắn xa hơn
     },
     BARRET_BORN: { 
         id: 'barret_born', name: "Barrett Born Beast", type: 'WEAPON', rarity: 'EPIC',
-        range: 12, damage: 120, mag: 0, maxMag: 5, cost: 3, accuracy: 0.9, mobility: 1, // One shot one kill nhưng tốn 3 đạn
+        range: 12, damage: 120, mag: 0, maxMag: 5, cost: 3, accuracy: 0.8, mobility: 1, // One shot one kill nhưng tốn 3 đạn
         img: 'https://i.ibb.co/b5kd9Lj6/Sniper-Barrett-M82-A1-Born-Beast.png',
         effects: [ WEAPON_EFFECTS.WALLBANG ]
     },
     KUKRI_TRANS: { 
         id: 'Kukri_Trans', id2: 'knife', name: "Kukri Transformer", type: 'WEAPON', rarity: 'EPIC',
-        range: 1, damage: 40, mag: 0, maxMag: 0, cost: 0, accuracy: 0.7, mobility: 5,
+        range: 1, damage: 40, mag: 0, maxMag: 0, cost: 0, accuracy: 0.6, mobility: 5,
         attacksPerTurn: 1,
         img: 'https://i.ibb.co/1yjdtqJ/KUKRI-TRANS-2.png',
         effects: [ WEAPON_EFFECTS.DASH ] // Kích hoạt lướt tới chém
     },
     RPK_RUSSIA: { 
         id: 'rpk_russia', name: "RPK Russia", type: 'WEAPON', rarity: 'EPIC',
-        range: 6, damage: 15, mag: 0, maxMag: 100, cost: 5, accuracy: 0.7, mobility: 2,
+        range: 6, damage: 15, mag: 0, maxMag: 100, cost: 5, accuracy: 0.6, mobility: 2,
         img: 'https://i.ibb.co/vCyTNVjW/MG-RPK-Russia.png',
         effects: [ WEAPON_EFFECTS.LIFESTEAL ] // Bắn hồi máu
     },
@@ -200,13 +200,13 @@ export const WEAPONS = {
 
     M4A1_PRISM: { 
         id: 'm4a1_prism', name: "M4A1-S Prism", type: 'WEAPON', rarity: 'LEGENDARY',
-        range: 6, damage: 25, mag: 0, maxMag: 30, cost: 3, accuracy: 0.9, mobility: 4,
+        range: 6, damage: 25, mag: 0, maxMag: 30, cost: 3, accuracy: 0.8, mobility: 4,
         img: 'https://i.ibb.co/fdyWY5p5/M4-A1-S-Prism-Beast-Noble-Gold.png',
         effects: [ WEAPON_EFFECTS.TELEPORT ] // Kích hoạt: Dịch chuyển tức thời!
     },
     BARRET_IRON: { 
         id: 'barret_iron', name: "Barrett Iron Shark", type: 'WEAPON', rarity: 'LEGENDARY',
-        range: 12, damage: 150, mag: 0, maxMag: 5, cost: 5, accuracy: 1.0, mobility: 1, // Không thể di chuyển!
+        range: 12, damage: 150, mag: 0, maxMag: 5, cost: 5, accuracy: 0.9, mobility: 1, // Không thể di chuyển!
         img: 'https://i.ibb.co/k2PtVHVy/M82-A1-Iron-Shark-Noble-Gold.png',
         effects: [ WEAPON_EFFECTS.TELEPORT ]
     }
@@ -237,7 +237,7 @@ export const ITEMS = {
     },
     ELITE_ARMOR: { 
         id: 'Elite_Amor', name: "Giáp Tinh Nhuệ", type: 'CONSUMABLE', category: 'SUPPLY',
-        valType: 'armor', val: 50, desc: "Tăng 50 Giáp", 
+        valType: 'armor', val: 100, desc: "Tăng 100 Giáp", 
         img: 'https://i.ibb.co/r2203MGT/pngwing-com.png', rarity: 'EPIC'
     },
 
@@ -250,19 +250,48 @@ export const ITEMS = {
     AMMO_BOX: { 
         id: 'ammo_box', name: "Thùng đạn", type: 'CONSUMABLE', category: 'AMMO',
         valType: 'ammo', 
-        val: 70, // Giá trị 
+        val: 50, // Giá trị 
         isPercent: true, // <--- Kích hoạt tính theo %
-        desc: "Hồi 70% băng đạn tối đa", 
+        desc: "Hồi 50% băng đạn tối đa", 
         img: 'https://i.ibb.co/hJZYtZcg/Th-ng-n.png', // Dùng tạm ảnh hòm hoặc ảnh khác
         rarity: 'RARE' // Đồ hiếm hơn
     },
     FRAG_GRENADE: {
         id: 'frag_grenade', name: "Lựu Đạn Nổ", type: 'THROWABLE', category: 'AMMO',
-        throwRange: 4, aoeRadius: 1.8, damage: 35, accuracy: 0.85,    
+        throwRange: 4, aoeRadius: 1.8, damage: 5, accuracy: 0.85,    
         explosionColor: 'rgba(231, 76, 60, 0.6)',
-        desc: "Nổ gây 35 dmg + Chảy máu", img: 'https://i.ibb.co/xKBRTt5h/THROWN-Grenade.png', rarity: 'EPIC',
+        desc: "Nổ gây 35 dmg", img: 'https://i.ibb.co/xKBRTt5h/THROWN-Grenade.png', rarity: 'EPIC',
+    },
+    BUG_GRENADE: {
+        id: 'bug_grenade', name: "Lựu Đạn Côn Trùng", type: 'THROWABLE', category: 'AMMO',
+        throwRange: 4, aoeRadius: 1.8, damage: 5, accuracy: 0.85,    
+        explosionColor: 'rgba(5, 63, 38, 0.6)',
+        desc: "Gây hoảng loạn", img: 'https://i.ibb.co/TxD3SbkH/BI-Grenade-Animal.png', rarity: 'EPIC',
+        debuff: { type: 'PANIC', chance: 1.0, duration: 2, val: 5 } 
+    },
+    BIO_GRENADE: {
+        id: 'bio_grenade', name: "Lựu Đạn Sinh Học", type: 'THROWABLE', category: 'AMMO',
+        throwRange: 4, aoeRadius: 1.8, damage: 5, accuracy: 0.85,    
+        explosionColor: 'rgba(10, 198, 116, 0.6)',
+        desc: "Gây trúng độc", img: 'https://i.ibb.co/wNZ4W8s7/NANOGRENADE.png', rarity: 'EPIC',
+        debuff: { type: 'POISON', chance: 1.0, duration: 2, val: 5 } 
+    },
+    BLIND_GRENADE: {
+        id: 'blind_grenade', name: "Lựu Đạn Bạc", type: 'THROWABLE', category: 'AMMO',
+        throwRange: 4, aoeRadius: 1.8, damage: 5, accuracy: 0.85,    
+        explosionColor: 'rgba(92, 156, 220, 0.6)',
+        desc: "Gây mù", img: 'https://i.ibb.co/G340Fv1j/GRENADE-TH-BI.png', rarity: 'EPIC',
+        debuff: { type: 'BLIND', chance: 1.0, duration: 2, val: 5 } 
+    },
+    RED_GRENADE: {
+        id: 'red_grenade', name: "Lựu Đạn Sao Đỏ", type: 'THROWABLE', category: 'AMMO',
+        throwRange: 4, aoeRadius: 1.8, damage: 5, accuracy: 0.85,    
+        explosionColor: 'rgba(207, 12, 12, 0.6)',
+        desc: "Gây hoảng loạn", img: 'https://i.ibb.co/5XTCwvsV/BI-Grenade-GSRF.png', rarity: 'EPIC',
         debuff: { type: 'BLEED', chance: 1.0, duration: 2, val: 5 } 
     },
+
+    
     FLASHBANG: {
         id: 'flashbang', name: "Bom Choáng", type: 'THROWABLE', category: 'AMMO',
         throwRange: 4, aoeRadius: 2.2, damage: 0, accuracy: 0.9,
