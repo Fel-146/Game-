@@ -19,24 +19,23 @@ export class Game {
 
     // Cập nhật tham số nhận vào: thêm viewMode
     init(playersData, viewMode = 'pc') {
-        this.players = playersData.map(data => {
-            // ... (Code tạo player giữ nguyên)
-            const p = new Player(data.id, data.name, data.color);
-            p.avatar = data.avatar;
-            return p;
-        });
+    this.players = playersData.map(data => {
+        const p = new Player(data.id, data.name, data.color);
+        p.avatar = data.avatar;
+        return p;
+    });
 
-        // --- XỬ LÝ CHẾ ĐỘ HIỂN THỊ ---
-        this.applyViewMode(viewMode);
+    // Xử lý chế độ hiển thị
+    this.applyViewMode(viewMode);
 
-        this.board.generateMap();
-        this.board.spawnPlayers(this.players);
+    this.board.generateMap();
+    this.board.spawnPlayers(this.players);
 
-        setTimeout(() => {
-            this.render(); 
-            this.setupBoardClicks();
-            this.updateHUD(); 
-        }, 100);
+    setTimeout(() => {
+        this.render(); 
+        this.setupBoardClicks();
+        this.updateHUD(); 
+    }, 100);
     }
 
     // --- HÀM MỚI: ÁP DỤNG CSS ---
@@ -56,19 +55,6 @@ export class Game {
         } else {
             gameScreen.classList.add('mode-pc');
         }
-    }
-
-    init(playersData) {
-        this.players = playersData.map(data => {
-            const p = new Player(data.id, data.name, data.color);
-            p.avatar = data.avatar;
-            return p;
-        });
-        this.board.generateMap();
-        this.board.spawnPlayers(this.players);
-        setTimeout(() => {
-            this.render(); this.setupBoardClicks(); this.updateHUD(); 
-        }, 100);
     }
 
     setupBoardClicks() {

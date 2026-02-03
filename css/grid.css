@@ -354,3 +354,6 @@
     width: 100% !important;
     height: 100% !important;
 }
+
+.mode-mobile { display: flex; flex-direction: column; }
+.board-mobile { width: 95vw !important; }
