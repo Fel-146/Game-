@@ -1,0 +1,412 @@
+/* css/style.css - CLEAN & FINAL VERSION 3-COLS */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a1a;
+    color: white;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* --- MÀN HÌNH CHUNG --- */
+.screen {
+    width: 100%;
+    /* Cho phép mở rộng chiều ngang tối đa để chứa 3 cột */
+    max-width: 1400px; 
+    display: none;
+    text-align: center;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* --- SETUP & AVATAR SCREEN --- */
+.panel {
+    background: #333;
+    padding: 30px;
+    border-radius: 15px;
+    display: inline-block;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    border: 1px solid #444;
+}
+
+.avatar-list {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.avatar-option {
+    border: 3px solid #555;
+    padding: 10px;
+    cursor: pointer;
+    background: #2c3e50;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.avatar-option:hover { transform: translateY(-5px); }
+
+.avatar-option.selected {
+    border-color: #f1c40f;
+    background: #34495e;
+    box-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+}
+
+.avatar-option img { width: 64px; height: 64px; }
+
+/* --- NÚT BẤM CHUNG --- */
+.btn-primary { 
+    padding: 12px 25px; 
+    font-size: 1.1em; 
+    cursor: pointer; 
+    background: #3498db; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    font-weight: bold;
+}
+.btn-primary:disabled { background: #555; cursor: not-allowed; }
+
+/* =========================================
+   LAYOUT GAME 3 CỘT (QUAN TRỌNG NHẤT)
+   ========================================= */
+
+.game-container-3-cols {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Căn hàng trên cùng */
+    gap: 25px;
+    padding: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* --- CỘT 1: TRÁI (PLAYER INFO & ACTIONS) --- */
+.sidebar-left {
+    width: 260px;
+    flex-shrink: 0;
+}
+
+.hud-panel {
+    background: #252525;
+    border: 1px solid #3a3a3a;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.player-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.hud-avatar-frame {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #fff;
+    background: #555;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.hud-avatar-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+#hud-player-name {
+    margin: 10px 0 5px 0;
+    font-size: 1.4rem;
+    color: #f1c40f;
+    text-shadow: 1px 1px 2px black;
+}
+
+/* Thanh máu */
+.stat-group { width: 100%; }
+.progress-bar-bg {
+    width: 100%;
+    height: 18px;
+    background: #111;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 5px 0;
+    border: 1px solid #444;
+}
+.progress-bar-fill { height: 100%; transition: width 0.3s ease; }
+.hp-fill { background-color: #e74c3c; box-shadow: inset 0 2px 5px rgba(255,255,255,0.2); }
+
+.separator { border-color: #444; margin: 20px 0; border-style: dashed; }
+
+/* Nút hành động dọc */
+.action-buttons-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-action {
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #34495e;
+    color: white;
+    text-align: left;
+    padding-left: 20px;
+    transition: all 0.2s;
+    border-left: 5px solid transparent;
+}
+
+.btn-action:hover { background: #3d566e; padding-left: 25px; }
+.btn-action:disabled { opacity: 0.5; cursor: not-allowed; background: #222; }
+
+#btn-move { border-left-color: #3498db; }
+#btn-attack { border-left-color: #e67e22; }
+#btn-inventory { border-left-color: #9b59b6; }
+#btn-end-turn { border-left-color: #e74c3c; background: #c0392b; text-align: center; padding-left: 0; }
+#btn-end-turn:hover { background: #e74c3c; padding-left: 0; transform: scale(1.05); }
+
+
+/* --- CỘT 2: GIỮA (BÀN CỜ) --- */
+.game-board-area {
+    flex-shrink: 0;
+    /* Hiệu ứng nổi cho bàn cờ */
+    box-shadow: 0 0 30px rgba(0,0,0,0.6);
+}
+
+
+/* --- CỘT 3: PHẢI (VŨ KHÍ TO) --- */
+.sidebar-right {
+    width: 320px;
+    flex-shrink: 0;
+}
+
+.weapon-showcase-panel {
+    background: linear-gradient(145deg, #2c3e50, #202c39);
+    border: 2px solid #5d6d7e;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+.weapon-showcase-panel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    border-color: #f1c40f;
+}
+
+.panel-header {
+    background: rgba(0,0,0,0.4);
+    color: #95a5a6;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.85rem;
+    letter-spacing: 3px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* SÂN KHẤU SÚNG (Nền sáng) */
+.weapon-stage {
+    background: radial-gradient(circle at center, #ecf0f1 10%, #bdc3c7 60%, #95a5a6 100%);
+    height: 250px; /* Rất cao để súng cực to */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    position: relative;
+    border-bottom: 4px solid #1a252f;
+}
+
+.weapon-stage img {
+    width: 95%;
+    height: 95%;
+    object-fit: contain;
+    filter: drop-shadow(8px 8px 6px rgba(0,0,0,0.5));
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.weapon-showcase-panel:hover .weapon-stage img {
+    transform: scale(1.15) rotate(-3deg);
+}
+
+.weapon-info-basic {
+    padding: 20px;
+    text-align: center;
+}
+
+#hud-weapon-name {
+    margin: 0;
+    font-size: 2rem; 
+    text-transform: uppercase;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 1px;
+    
+    /* Thêm dòng này để màu chuyển đổi mượt mà nếu muốn */
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.ammo-display {
+    background: #0b0b0b;
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+}
+
+.ammo-label { color: #7f8c8d; font-size: 0.8rem; font-weight: bold; letter-spacing: 1px; }
+.ammo-count { color: #2ecc71; font-weight: bold; font-size: 1.4rem; font-family: 'Courier New', monospace; }
+
+.click-hint {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #7f8c8d;
+    padding-bottom: 12px;
+    font-style: italic;
+    opacity: 0.7;
+}
+
+/* =========================================
+   ELEMENTS KHÁC (Hòm đồ, Hiệu ứng, Modal)
+   ========================================= */
+
+.item-crate {
+    font-size: 2rem;
+    color: #e67e22;
+    filter: drop-shadow(0 0 5px orange);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+/* --- MODAL --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(3px);
+}
+.modal.hidden { display: none; }
+
+.modal-content {
+    background: #2c3e50;
+    padding: 25px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 550px;
+    border: 2px solid #5d6d7e;
+    position: relative;
+    color: white;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.7);
+}
+.small-modal { max-width: 320px; text-align: center; }
+
+.close-modal {
+    position: absolute;
+    top: 10px; right: 15px;
+    font-size: 35px;
+    cursor: pointer;
+    color: #95a5a6;
+    transition: color 0.2s;
+}
+.close-modal:hover { color: #fff; }
+
+/* Grid túi đồ */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.inv-item {
+    background: #34495e;
+    border: 2px solid #4a6278;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s;
+}
+.inv-item:hover { transform: translateY(-3px); border-color: #f1c40f; }
+.inv-item h4 { margin: 5px 0; font-size: 0.9em; color: #ecf0f1; }
+.inv-item .icon { font-size: 2.2rem; margin-bottom: 5px; }
+
+.btn-mini { padding: 5px 10px; font-size: 0.75em; cursor: pointer; border: none; border-radius: 4px; color: white; font-weight: bold; }
+.btn-use { background: #27ae60; }
+.btn-equip { background: #2980b9; }
+.btn-drop { background: #c0392b; }
+
+/* Chi tiết súng trong Modal */
+.weapon-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #444;
+    font-size: 1.1rem;
+}
+.weapon-detail-row:last-child { border-bottom: none; }
+.weapon-detail-row .val { color: #f1c40f; font-weight: bold; }
+
+/* --- PHẨM CHẤT VẬT PHẨM (Inventory & Modal) --- */
+/* Dùng độ ưu tiên cao hơn để đè lên màu mặc định */
+
+.rarity-common, 
+.inv-item h4.rarity-common { 
+    color: #ecf0f1 !important; 
+    text-shadow: 0 0 2px #000; 
+} 
+
+.rarity-rare, 
+.inv-item h4.rarity-rare { 
+    color: #3498db !important; 
+    text-shadow: 0 0 5px #2980b9; 
+    font-weight: bold; 
+} 
+
+.rarity-epic, 
+.inv-item h4.rarity-epic { 
+    color: #9b59b6 !important; 
+    text-shadow: 0 0 5px #8e44ad; 
+    font-weight: bold; 
+} 
+
+.rarity-legendary, 
+.inv-item h4.rarity-legendary { 
+    color: #e67e22 !important; 
+    text-shadow: 0 0 8px #d35400; 
+    font-weight: bold;
+    animation: glowText 1.5s infinite alternate; 
+}
+
+@keyframes glowText {
+    from { text-shadow: 0 0 5px #d35400; }
+    to { text-shadow: 0 0 15px #f39c12; }
+}

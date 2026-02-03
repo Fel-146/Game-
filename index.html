@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tactical Battle Full Flow</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/grid.css">
+</head>
+<body>
+
+    <section id="setup-screen" class="screen active">
+        <div class="panel">
+            <h1>Cài đặt trận đấu</h1>
+            <div class="form-group">
+                <label>Số lượng người chơi:</label>
+                <select id="player-count" style="padding: 10px; font-size: 1.1em; border-radius: 5px;">
+                    <option value="2">2 Người</option>
+                    <option value="3">3 Người</option>
+                    <option value="4">4 Người</option>
+                </select>
+            </div>
+            <br>
+            <button id="btn-to-avatar" class="btn-primary">Tiếp tục</button>
+        </div>
+    </section>
+
+    <section id="avatar-screen" class="screen hidden">
+        <div class="panel">
+            <h2>Chọn nhân vật cho: <span id="avatar-player-name" class="highlight" style="font-weight:bold;">Player 1</span></h2>
+            
+            <div class="avatar-list">
+                <div class="avatar-option" data-img="https://i.ibb.co/GfwzFkLK/BOPE-BG.png">
+                    <img src="https://i.ibb.co/GfwzFkLK/BOPE-BG.png" alt="Soldier 1">
+                </div>
+                <div class="avatar-option" data-img="https://i.ibb.co/Kp4mLDxS/NAVY-SEAL-NEW.png">
+                    <img src="https://i.ibb.co/Kp4mLDxS/NAVY-SEAL-NEW.png" alt="Soldier 2">
+                </div>
+                <div class="avatar-option" data-img="https://i.ibb.co/20zvqXYr/SIA-BG.png">
+                    <img src="https://i.ibb.co/20zvqXYr/SIA-BG.png" alt="Soldier 3">
+                </div>
+                <div class="avatar-option" data-img="https://i.ibb.co/3mTw6DMR/SWAT-E-BG.png">
+                    <img src="https://i.ibb.co/3mTw6DMR/SWAT-E-BG.png" alt="Soldier 4">
+                </div>
+                <div class="avatar-option" data-img="https://i.ibb.co/wrbhXVPv/SBS-BG.png">
+                    <img src="https://i.ibb.co/wrbhXVPv/SBS-BG.png" alt="Soldier 5">
+                </div>
+            </div>
+
+            <br>
+            <button id="btn-confirm-avatar" class="btn-primary" disabled>Xác nhận</button>
+        </div>
+    </section>
+
+    <section id="game-screen" class="screen hidden">
+    <div class="game-container-3-cols">
+        
+        <aside class="sidebar-left">
+            <div class="hud-panel">
+                <h3 id="hud-turn-text">Lượt của Player...</h3>
+                
+                <div class="player-profile">
+                    <div class="hud-avatar-frame">
+                        <img id="hud-avatar-img" src="" alt="Avatar">
+                    </div>
+                    <h2 id="hud-player-name">Player Name</h2>
+
+                    <div id="hud-status-area" style="min-height: 20px; font-size: 0.9em; font-weight: bold; margin-bottom: 5px; text-shadow: 1px 1px 0 #000;">
+                        </div>
+                    <div class="stat-group">
+                        <div class="progress-bar-bg">
+                            <div id="hud-hp-bar" class="progress-bar-fill hp-fill" style="width: 100%;"></div>
+                        </div>
+                        <span id="hud-hp-text">20/20</span>
+                    </div>
+
+                    <div class="stat-group" style="margin-top: 5px;">
+                        <div class="progress-bar-bg">
+                            <div id="hud-armor-bar" class="progress-bar-fill" style="width: 0%; background-color: #3498db; transition: width 0.3s ease;"></div>
+                        </div>
+                        <span id="hud-armor-text" style="font-size: 0.9em; color: #3498db;">0/20</span>
+                    </div>
+                </div>
+
+                <hr class="separator">
+
+                <div class="action-buttons-vertical">
+                    <button id="btn-move" class="btn-action">🏃 Di chuyển</button>
+                    <button id="btn-attack" class="btn-action btn-attack">⚔️ Tấn công</button>
+                    
+                    <div id="skill-area" style="display: none; width: 100%; margin-bottom: 8px;">
+                        <button id="btn-skill" class="btn-action" style="background-color: #8e44ad; border: 1px solid #732d91; color: white;">
+                            ⚡ <span id="skill-name">Kỹ năng</span>
+                        </button>
+                    </div>
+                    <button id="btn-inventory" class="btn-action btn-inventory">🎒 Túi đồ</button>
+                    <button id="btn-end-turn" class="btn-action btn-end">Kết thúc lượt</button>
+                </div>
+            </div>
+        </aside>
+
+        <main class="game-board-area">
+            <div id="game-board" class="grid-12x12"></div>
+        </main>
+
+        <aside class="sidebar-right">
+            <div class="weapon-showcase-panel" id="weapon-display-area" title="Bấm để xem chi tiết">
+                <div class="panel-header">VŨ KHÍ CHÍNH</div>
+                
+                <div class="weapon-stage">
+                    <img id="hud-weapon-img" src="" alt="Weapon">
+                </div>
+
+                <div class="weapon-info-basic">
+                    <h2 id="hud-weapon-name">Tên Súng</h2>
+                    <div class="ammo-display">
+                        <span class="ammo-label">BĂNG ĐẠN</span>
+                        <span id="hud-weapon-ammo" class="ammo-count">--/--</span>
+                    </div>
+                </div>
+
+                <div class="click-hint">(Bấm vào súng để xem thông số)</div>
+            </div>
+        </aside>
+
+    </div>
+
+    <div id="modal-inventory" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal" id="close-inventory">&times;</span>
+            <h2>🎒 Túi đồ</h2>
+            <div id="inventory-list" class="inventory-grid"></div>
+        </div>
+    </div>
+
+    <div id="modal-weapon-info" class="modal hidden">
+        <div class="modal-content small-modal">
+            <span class="close-modal" id="close-weapon">&times;</span>
+            
+            <h2 id="info-weapon-name" style="text-transform: uppercase; margin-bottom: 15px;">Tên súng</h2>
+            
+            <div class="weapon-detail-row">
+                <span>Sát thương:</span> <span id="info-dmg" class="val">0</span>
+            </div>
+            <div class="weapon-detail-row">
+                <span>Tầm bắn:</span> <span id="info-range" class="val">0</span>
+            </div>
+            
+            <div class="weapon-detail-row">
+                <span>Độ chính xác:</span> <span id="info-acc" class="val">0%</span>
+            </div>
+            <div class="weapon-detail-row">
+                <span>Tiêu hao:</span> <span id="info-cost" class="val">0</span>
+            </div>
+            <div class="weapon-detail-row">
+                <span>Cơ động:</span> <span id="info-mob" class="val">0</span>
+            </div>
+            
+            <div class="weapon-detail-row" style="border-bottom: none;">
+                <span>Băng đạn:</span> <span id="info-mag" class="val">0</span>
+            </div>
+
+            <div style="margin-top: 15px; border-top: 1px dashed #555; padding-top: 10px;">
+                <h4 style="margin: 0 0 5px 0; color: #aaa; font-size: 0.9rem;">HIỆU ỨNG ĐẶC BIỆT:</h4>
+                <div id="info-effects" style="font-size: 0.9rem; line-height: 1.4;">
+                    </div>
+            </div>
+            </div>
+    </div>
+</section>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

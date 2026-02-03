@@ -1,0 +1,302 @@
+/* css/grid.css - FINAL VERSION (UPDATED WITH ARMOR BAR) */
+
+/* --- KHUNG BÀN CỜ --- */
+.grid-12x12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    gap: 2px;
+    width: 600px;
+    height: 600px;
+    background-color: #333;
+    border: 4px solid #444;
+    /* Ngăn bàn cờ bị co giãn */
+    flex-shrink: 0; 
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    position: relative; /* Mốc tọa độ cho các hiệu ứng bay */
+}
+
+/* --- Ô ĐẤT (SÀN NHÀ) --- */
+.grid-cell {
+    /* Texture nền gạch tối */
+    background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+    background-color: #555; 
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Cắt bỏ phần thừa */
+    border: 1px solid #444;
+}
+
+.grid-cell:hover {
+    filter: brightness(1.3); /* Sáng lên khi di chuột */
+    z-index: 2; /* Nổi lên trên */
+    border-color: #aaa;
+}
+
+/* --- Ô TƯỜNG (WALL) --- */
+.cell-wall {
+    background-color: #2c3e50;
+    /* Texture gạch tường */
+    background-image: url('https://www.transparenttextures.com/patterns/brick-wall-dark.png');
+    background-size: cover;
+    box-shadow: inset 0 0 15px #000;
+}
+
+/* --- NGƯỜI CHƠI (PLAYER TOKEN) --- */
+.player-token {
+    position: relative; 
+    width: 85%;  
+    height: 85%;
+    border-radius: 50%;
+    
+    z-index: 10; /* Nằm đè lên Item */
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+    transition: transform 0.2s;
+    border: 2px solid transparent; /* Viền để JS gán màu team */
+}
+
+/* Ảnh Avatar bên trong token */
+.player-token img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+/* --- THANH CHỈ SỐ MINI TRÊN ĐẦU TOKEN (MỚI) --- */
+.token-stat-container {
+    position: absolute;
+    top: 2px;           /* Cách mép trên 2px */
+    left: 4px;          
+    right: 4px;
+    display: flex;
+    flex-direction: column; /* Xếp chồng dọc */
+    gap: 1px;           /* Khoảng cách giữa thanh Máu và Giáp */
+    z-index: 12;        /* Nằm trên ảnh nhân vật */
+    pointer-events: none; /* Bấm xuyên qua */
+}
+
+.mini-bar-bg {
+    width: 100%;
+    height: 2px;        /* Chiều cao thanh (rất mảnh) */
+    background-color: rgba(0, 0, 0, 0.7); /* Nền đen mờ */
+    border-radius: 2px;
+    overflow: hidden;
+    border: 0.5px solid rgba(255,255,255,0.2);
+}
+
+.mini-bar-fill {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Màu sắc các thanh */
+.fill-hp { background-color: #2ecc71; }    /* Xanh lá */
+.fill-hp.low { background-color: #e74c3c; } /* Đỏ khi máu thấp */
+.fill-armor { background-color: #3498db; } /* Xanh dương */
+
+
+/* --- ITEM TRÊN BẢN ĐỒ --- */
+.item-img-on-map {
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0;
+    margin: auto; 
+    
+    width: 65%; 
+    height: 65%;
+    object-fit: contain;
+    
+    z-index: 1; /* Nằm dưới cùng */
+    
+    animation: floatItem 2s ease-in-out infinite;
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+    pointer-events: none; 
+}
+
+/* Hiệu ứng Hòm Tiếp Tế phát sáng */
+.crate-glow {
+    filter: drop-shadow(0 0 8px #f1c40f);
+    width: 80%;
+    height: 80%;
+}
+
+@keyframes floatItem {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* --- HIGHLIGHT DI CHUYỂN --- */
+.highlight-move {
+    background-color: rgba(52, 152, 219, 0.4) !important;
+    box-shadow: inset 0 0 15px #3498db;
+    cursor: pointer;
+    animation: pulseBlue 1.5s infinite;
+}
+
+@keyframes pulseBlue {
+    0% { opacity: 0.6; }
+    50% { opacity: 1; }
+    100% { opacity: 0.6; }
+}
+
+/* --- HIGHLIGHT TẤN CÔNG (HƯỚNG) --- */
+.highlight-attack-dir {
+    background-color: rgba(230, 126, 34, 0.5) !important;
+    box-shadow: inset 0 0 15px #d35400;
+    cursor: crosshair;
+    animation: pulseOrange 0.8s infinite;
+}
+
+.highlight-attack-dir::after {
+    content: '🎯';
+    font-size: 1.5rem;
+    opacity: 0.8;
+    
+    /* FIX LỖI BIẾN DẠNG: Đưa ra khỏi luồng Flexbox */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5; /* Nằm trên nền nhưng dưới nhân vật nếu cần */
+}
+
+@keyframes pulseOrange {
+    0% { transform: scale(0.95); opacity: 0.7; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.7; }
+}
+
+/* --- HIỆU ỨNG ĐẠN --- */
+.bullet-trail {
+    position: absolute;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(255,200,0,0) 0%, rgba(255,215,0,1) 50%, #fff 100%);
+    z-index: 100;
+    pointer-events: none;
+    transform-origin: left center;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(255, 165, 0, 0.9);
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+}
+
+/* --- HỆ THỐNG FLOATING TEXT --- */
+.floating-text {
+    position: fixed; /* Bắt buộc để bay trên body */
+    pointer-events: none;
+    z-index: 10000; /* Đảm bảo nằm trên cùng */
+    
+    /* --- LOGIC CĂN CHỈNH THẨM MĨ --- */
+    /* 1. Căn giữa dòng chữ vào đúng toạ độ được giao */
+    transform: translate(-50%, -50%);
+    
+    /* 2. Cho phép chữ dài ra, nhưng giới hạn không quá rộng */
+    width: max-content;      /* Chiều rộng ôm sát nội dung chữ */
+    max-width: 200px;        /* Nếu dài hơn 200px thì mới xuống dòng */
+    
+    /* 3. Căn giữa văn bản */
+    text-align: center;
+    white-space: normal;     /* Cho phép xuống dòng tự nhiên */
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); /* Viền đen giúp chữ nổi bật */
+    
+    /* Animation bay lên */
+    animation: floatUpFade 1.5s forwards;
+}
+
+.text-damage { color: #e74c3c; font-size: 1.5rem; }
+.text-heal { color: #2ecc71; }
+.text-miss { color: #95a5a6; font-style: italic; }
+.text-info { color: #f1c40f; font-size: 1rem; }
+.text-crit { color: #ff9f43; font-size: 1.8rem; transform: scale(1.2); }
+
+@keyframes floatUpFade {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-40px) scale(1); opacity: 0; }
+}
+
+/* --- ICON TÚI ĐỒ (INVENTORY) --- */
+.inv-item .icon {
+    width: 60px;
+    height: 60px;
+    background-color: #2c3e50; 
+    border: 2px solid #95a5a6; 
+    border-radius: 8px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    overflow: hidden; 
+    flex-shrink: 0; 
+    font-size: 30px; 
+}
+
+.inv-item .icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+    padding: 5px; 
+    display: block;
+}
+
+/* --- MÀU PHẨM CHẤT (Floating Text) --- */
+.text-rarity-common { color: #fff; font-weight: bold; text-shadow: 1px 1px 0 #000; }
+.text-rarity-rare { color: #3498db; font-weight: bold; text-shadow: 1px 1px 0 #000; }
+.text-rarity-epic { color: #9b59b6; font-weight: bold; text-shadow: 1px 1px 0 #000; }
+.text-rarity-legendary { color: #e67e22; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 10px gold; }
+
+.powerup-item {
+    position: absolute;
+    z-index: 2;
+    width: 70%;  /* Ảnh chiếm 70% ô */
+    height: 70%;
+    object-fit: contain; /* Giữ tỷ lệ ảnh không bị méo */
+    
+    /* Căn giữa */
+    top: 15%;
+    left: 15%;
+    
+    /* Hiệu ứng bay & bóng đổ */
+    filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5));
+    animation: floatItem 2s infinite ease-in-out;
+    pointer-events: none; /* Để click xuyên qua vào ô đất */
+}
+
+@keyframes floatItem {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+/* Màu chữ thông báo (Thêm màu cho Speed) */
+.text-speed { 
+    color: #00d2d3; /* Màu xanh cyan */
+    font-weight: bold; 
+    font-size: 1.2rem;
+    text-shadow: 1px 1px 0 #000;
+}
+
+/* --- THÊM VÀO CUỐI FILE css/grid.css --- */
+
+/* Highlight tầm ném */
+.highlight-throw {
+    box-shadow: inset 0 0 15px rgba(230, 126, 34, 0.6); /* Màu cam */
+    cursor: crosshair;
+}
+
+/* Hiệu ứng nổ (Màu sắc sẽ được gán động bằng JS) */
+.explosion-flash {
+    animation: flashAnim 0.5s ease-out forwards;
+    pointer-events: none; /* Để không chặn click */
+}
+
+@keyframes flashAnim {
+    0% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.1); }
+    100% { opacity: 0; transform: scale(1); }
+}
