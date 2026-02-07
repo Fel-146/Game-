@@ -131,7 +131,7 @@ export class Player {
                 }
 
                 // 3. Các kiểm tra cơ bản khác
-                if (this.weapon.id === 'knife') return { success: false, msg: "Dao không dùng đạn!" };
+                if (this.weapon.id2 === 'knife') return { success: false, msg: "Dao không dùng đạn!" };
                 if (this.weapon.mag >= this.weapon.maxMag) return { success: false, msg: "Đạn đầy!" };
                 
                 // 4. Tính toán lượng đạn (Giữ nguyên logic % ở câu trả lời trước)

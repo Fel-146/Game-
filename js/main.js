@@ -7,6 +7,64 @@ let playersData = [];
 let currentSetupIndex = 0;
 const colors = ['red', 'blue', 'green', 'yellow'];
 
+// Khởi tạo đối tượng Game
+const game = new Game();
+
+// --- BIẾN LƯU CẤU HÌNH ---
+let selectedViewMode = 'pc'; 
+let selectedGameMode = 'pvp'; 
+let selectedMap = 'training'; 
+
+// --- BIẾN QUẢN LÝ COOLDOWN & KHÓA NÚT (MỚI) ---
+let isButtonCooldown = false; // Cờ đánh dấu đang chờ 0.2s
+
+/**
+ * Hàm kiểm tra xem người chơi có được phép bấm nút không
+ * @returns {boolean} True nếu được phép bấm, False nếu bị chặn
+ */
+function canInteract() {
+    // 1. Nếu game chưa bắt đầu hoặc đang xử lý hiệu ứng
+    if (!game || game.isProcessing) return false;
+
+    // 2. Nếu đang trong thời gian chờ 0.2s (tránh spam nút)
+    if (isButtonCooldown) return false;
+
+    // 3. Nếu là lượt của AI (Quái/Boss) -> CHẶN TUYỆT ĐỐI
+    const currentPlayer = game.players[game.currentPlayerIndex];
+    if (currentPlayer && currentPlayer.isAI) {
+        console.log("🚫 Đang là lượt của AI, không được bấm!");
+        return false;
+    }
+
+    // --- NẾU QUA ĐƯỢC HẾT CÁC BƯỚC TRÊN -> CHO PHÉP ---
+    
+    // Kích hoạt cooldown ngay lập tức
+    isButtonCooldown = true;
+    setTimeout(() => {
+        isButtonCooldown = false;
+    }, 200); // 0.2 giây (200ms)
+
+    return true;
+}
+
+// Cập nhật giao diện khi đổi lượt (Game.js sẽ gọi hàm này)
+function updateControlVisuals() {
+    // Tìm container chứa các nút bấm (giả sử là .right-panel hoặc body nếu mobile)
+    const controls = document.querySelector('.right-panel') || document.querySelector('.controls-container');
+    const currentPlayer = game.players[game.currentPlayerIndex];
+    
+    if (controls && currentPlayer) {
+        if (currentPlayer.isAI) {
+            controls.classList.add('ai-turn-locked'); // Thêm class làm mờ (cần CSS)
+        } else {
+            controls.classList.remove('ai-turn-locked');
+        }
+    }
+}
+// Gán vào window để Game.js có thể gọi
+window.updateControlVisuals = updateControlVisuals;
+
+
 // --- DOM ELEMENTS ---
 const screenSetup = document.getElementById('setup-screen');
 const screenAvatar = document.getElementById('avatar-screen');
@@ -17,22 +75,24 @@ const btnConfirmAvatar = document.getElementById('btn-confirm-avatar');
 const avatarOptions = document.querySelectorAll('.avatar-option');
 const avatarPlayerName = document.getElementById('avatar-player-name');
 
-// Khởi tạo đối tượng Game
-const game = new Game();
-
-// Thêm biến global để lưu chế độ (Mặc định là PC)
-let selectedViewMode = 'pc'; 
 
 // --- 1. SỰ KIỆN: TỪ SETUP SANG CHỌN AVATAR ---
 btnToAvatar.addEventListener('click', () => {
     totalPlayers = parseInt(document.getElementById('player-count').value);
     
-    // LẤY GIÁ TRỊ CHẾ ĐỘ TỪ HTML (Nếu có element này)
+    // A. LẤY CHẾ ĐỘ HIỂN THỊ
     const viewModeEl = document.getElementById('view-mode');
-    if (viewModeEl) {
-        selectedViewMode = viewModeEl.value;
-    }
+    if (viewModeEl) selectedViewMode = viewModeEl.value;
 
+    // B. LẤY CHẾ ĐỘ CHƠI (PvP / BOSS)
+    const gameModeEl = document.getElementById('game-mode');
+    if (gameModeEl) selectedGameMode = gameModeEl.value;
+
+    // C. LẤY BẢN ĐỒ (Nếu chọn Boss mode)
+    const mapSelectEl = document.getElementById('map-select');
+    if (mapSelectEl) selectedMap = mapSelectEl.value;
+
+    // Reset dữ liệu cũ
     playersData = [];
     currentSetupIndex = 0;
 
@@ -80,9 +140,21 @@ function updateAvatarHeader() {
 function startGame() {
     switchScreen(screenAvatar, screenGame);
     
-    // CẬP NHẬT QUAN TRỌNG: Truyền selectedViewMode vào hàm init
-    console.log("-> Bắt đầu game với chế độ:", selectedViewMode);
-    game.init(playersData, selectedViewMode);
+    // Gán class cho body để CSS nhận diện Mobile/PC
+    document.body.classList.remove('mode-pc', 'mode-mobile');
+    if (selectedViewMode === 'mobile') {
+        document.body.classList.add('mode-mobile');
+    } else {
+        document.body.classList.add('mode-pc');
+    }
+    
+    console.log(`-> START GAME: Mode=${selectedGameMode}, Map=${selectedMap}, View=${selectedViewMode}`);
+
+    // Gọi hàm init
+    game.init(playersData, selectedViewMode, selectedGameMode, selectedMap);
+    
+    // Cập nhật trạng thái nút bấm ngay khi vào game
+    updateControlVisuals();
 }
 
 function switchScreen(from, to) {
@@ -94,49 +166,74 @@ function switchScreen(from, to) {
     }, 100);
 }
 
-// --- 4. CÁC SỰ KIỆN TRONG GAME (NÚT BẤM) ---
+// --- 4. CÁC SỰ KIỆN TRONG GAME (ĐÃ ÁP DỤNG KHÓA NÚT) ---
 
 // Nút Kết thúc lượt
-document.getElementById('btn-end-turn').addEventListener('click', () => {
-    if (game.isProcessing) return; // Chặn nếu đang xử lý animation
-    console.log("-> Bấm nút Kết Thúc Lượt");
-    game.nextTurn();
-});
+const btnEndTurn = document.getElementById('btn-end-turn');
+if (btnEndTurn) {
+    btnEndTurn.addEventListener('click', () => {
+        if (!canInteract()) return; // <--- KIỂM TRA ĐIỀU KIỆN
+        console.log("-> Bấm nút Kết Thúc Lượt");
+        
+        // Ưu tiên dùng endTurn nếu có (để reset các trạng thái UI), nếu không thì dùng nextTurn
+        if (typeof game.endTurn === 'function') {
+            game.endTurn();
+        } else {
+            game.nextTurn();
+        }
+    });
+}
 
 // Nút Di chuyển
-document.getElementById('btn-move').addEventListener('click', () => {
-    if (game.isProcessing) return;
-    game.startMovePhase();
-});
+const btnMove = document.getElementById('btn-move');
+if (btnMove) {
+    btnMove.addEventListener('click', () => {
+        if (!canInteract()) return; // <--- KIỂM TRA ĐIỀU KIỆN
+        game.startMovePhase();
+    });
+}
 
 // Nút Tấn công
-document.getElementById('btn-attack').addEventListener('click', () => {
-    if (game.isProcessing) return;
-    game.startAttackPhase();
-});
+const btnAttack = document.getElementById('btn-attack');
+if (btnAttack) {
+    btnAttack.addEventListener('click', () => {
+        if (!canInteract()) return; // <--- KIỂM TRA ĐIỀU KIỆN
+        game.startAttackPhase();
+    });
+}
+
+// Nút Nạp đạn (Nếu có)
+const btnReload = document.getElementById('btn-reload');
+if (btnReload) {
+    btnReload.addEventListener('click', () => {
+        if (!canInteract()) return;
+        game.reloadWeapon();
+    });
+}
 
 // Nút Túi đồ
 const modalInv = document.getElementById('modal-inventory');
 const btnInv = document.getElementById('btn-inventory');
 const closeInv = document.getElementById('close-inventory');
 
-btnInv.addEventListener('click', () => {
-    modalInv.classList.remove('hidden');
-    game.openInventory();
-});
-closeInv.addEventListener('click', () => modalInv.classList.add('hidden'));
+if (btnInv && modalInv) {
+    btnInv.addEventListener('click', () => {
+        if (!canInteract()) return; // <--- KIỂM TRA ĐIỀU KIỆN
+        modalInv.classList.remove('hidden');
+        game.openInventory();
+    });
+    closeInv.addEventListener('click', () => modalInv.classList.add('hidden'));
+}
 
 // --- SỰ KIỆN NÚT KỸ NĂNG (ACTIVE SKILL) ---
 const btnSkill = document.getElementById('btn-skill');
 if(btnSkill) {
     btnSkill.addEventListener('click', () => {
-        if (game.isProcessing) return; // Chặn nếu đang xử lý
+        if (!canInteract()) return; // <--- KIỂM TRA ĐIỀU KIỆN
 
-        // Lấy thông tin người chơi hiện tại
         const player = game.players[game.currentPlayerIndex];
         const effects = player.weapon.effects || [];
         
-        // Tìm skill Active (Dựa trên thuộc tính isActive trong data.js)
         const activeEffect = effects.find(eff => eff.isActive === true);
         
         if (activeEffect) {
@@ -163,3 +260,45 @@ window.addEventListener('click', (e) => {
     if (e.target == modalInv) modalInv.classList.add('hidden');
     if (e.target == modalWeapon) modalWeapon.classList.add('hidden');
 });
+
+// --- HÀM CẬP NHẬT GIAO DIỆN NÚT (Được gọi từ Game.js) ---
+window.updateControlVisuals = function() {
+    // 1. Lấy thông tin người chơi hiện tại
+    const player = game.getCurrentPlayer();
+    if (!player) return;
+
+    const isAI = player.isAI;
+    
+    // 2. Danh sách các nút cần khóa/mở
+    const buttons = [
+        document.getElementById('btn-move'),
+        document.getElementById('btn-attack'),
+        document.getElementById('btn-end-turn'),
+        document.getElementById('btn-skill'),
+        document.getElementById('btn-inventory')
+    ];
+
+    // 3. Duyệt qua từng nút để đổi màu/khóa
+    buttons.forEach(btn => {
+        if (!btn) return; // Bỏ qua nếu không tìm thấy nút
+
+        if (isAI) {
+            // Nếu là lượt AI: Thêm class disabled, bỏ sự kiện click (visual)
+            btn.classList.add('disabled');
+            btn.style.opacity = '0.5';
+            btn.style.pointerEvents = 'none';
+        } else {
+            // Nếu là lượt Người: Khôi phục lại
+            btn.classList.remove('disabled');
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+    });
+
+    // Cập nhật text thông báo lượt
+    const turnInfo = document.getElementById('turn-info'); // Nếu có thẻ này
+    if (turnInfo) {
+        turnInfo.innerText = isAI ? `Lượt của: ${player.name} (Đang nghĩ...)` : `Lượt của bạn: ${player.name}`;
+        turnInfo.style.color = player.color;
+    }
+};

@@ -2,10 +2,10 @@
 
 // 1. TỶ LỆ RƠI ĐỒ (WEIGHTED CHANCE)
 export const LOOT_RATES = {
-    COMMON: 40,         
-    RARE: 30,       
-    EPIC: 20,       
-    LEGENDARY: 10    
+    COMMON: 70,         
+    RARE: 20,       
+    EPIC: 8,       
+    LEGENDARY: 2    
 };
 
 // 2. HIỆU ỨNG VŨ KHÍ
@@ -209,7 +209,8 @@ export const WEAPONS = {
         range: 12, damage: 150, mag: 0, maxMag: 5, cost: 5, accuracy: 0.9, mobility: 1, // Không thể di chuyển!
         img: 'https://i.ibb.co/k2PtVHVy/M82-A1-Iron-Shark-Noble-Gold.png',
         effects: [ WEAPON_EFFECTS.TELEPORT ]
-    }
+    },
+
 };
 
 // 5. DANH SÁCH VẬT PHẨM (ĐÃ PHÂN LOẠI CATEGORY)
@@ -258,7 +259,7 @@ export const ITEMS = {
     },
     FRAG_GRENADE: {
         id: 'frag_grenade', name: "Lựu Đạn Nổ", type: 'THROWABLE', category: 'AMMO',
-        throwRange: 4, aoeRadius: 1.8, damage: 5, accuracy: 0.85,    
+        throwRange: 4, aoeRadius: 1.8, damage: 35, accuracy: 0.85,    
         explosionColor: 'rgba(231, 76, 60, 0.6)',
         desc: "Nổ gây 35 dmg", img: 'https://i.ibb.co/xKBRTt5h/THROWN-Grenade.png', rarity: 'EPIC',
     },
@@ -304,4 +305,124 @@ export const ITEMS = {
     CRATE_WEAPON: { id: 'crate_weapon', name: "Hòm Vũ Khí", type: 'INTERACT', img: 'https://i.ibb.co/RG4yWZ05/ITEM-MXC-Crate1.png' },
     CRATE_AMMO:   { id: 'crate_ammo', name: "Hòm Đạn Dược", type: 'INTERACT', img: 'https://i.ibb.co/ymmpNJM4/ITEM-MXC-Crate.png' },
     CRATE_SUPPLY: { id: 'crate_supply', name: "Hòm Nhu Yếu Phẩm", type: 'INTERACT', img: 'https://i.ibb.co/9HfhTP6G/ITEM-MXC-Crate2.png' }
+};
+
+export const MAP_CONFIG = {
+    'training': { // Map Khu Huấn Luyện
+        // Giới hạn số lượng quái xuất hiện cùng lúc trên màn hình
+        // Nếu bạn muốn cả 7 con (5 quái + 2 boss) ra cùng lúc thì chỉnh số này lên 7 hoặc 8
+        max_on_map: 6, 
+        
+        waves: [
+            // --- ĐỢT 1: Quái ít và yếu ---
+            { 
+                id: 1, 
+                enemies: [
+                    { type: 'ZOMBIE', count: 4 },          // 5 con Zombie
+                    { type: 'SPRINTER', count: 2 }    // 2 con Boss
+                ] 
+            }, 
+
+            // --- ĐỢT 2: Quái nhiều và nguy hiểm ---
+            { 
+                id: 2, 
+                enemies: [
+                    { type: 'ZOMBIE', count: 6 },
+                    { type: 'SPRINTER', count: 4 }
+                ] 
+            }, 
+
+            // --- ĐỢT 3 (Cuối): 1 Siêu Boss + rất nhiều quái con ---
+            { 
+                id: 3, 
+                enemies: [
+                    { type: 'ZOMBIE', count: 6 },
+                    { type: 'SPRINTER', count: 6 },
+                    { type: 'BOSS_TRAINING', count: 1 }
+                ] 
+            } 
+        ]
+    },
+
+    'abyss': { // Map Vực Tử Thần (Cấu hình tương tự)
+        max_on_map: 5,
+        waves: [
+            { id: 1, enemies: [{ type: 'ASSASSIN', count: 3 }] },
+            { id: 2, enemies: [{ type: 'ASSASSIN', count: 5 }, { type: 'BOSS_ABYSS', count: 1 }] }
+        ]
+    }
+};
+
+// 2. CẬP NHẬT THÔNG SỐ QUÁI (THÊM LOOT TABLE)
+// type: 'ITEM' (lấy từ ITEMS) hoặc 'WEAPON' (lấy từ WEAPONS người chơi)
+export const ENEMIES = {
+    // --- MAP 1 ---
+    ZOMBIE: { 
+        name: "Zombie", hp: 40, enemy_weapon: 'ZOMBIE_HAND', avatar: 'https://i.ibb.co/qMqWBsP8/317-3179252-undead-crossfire.png',
+        // Tỉ lệ rơi đồ: 30% ra máu, 5% ra súng lục
+        loot_table: [
+            { code: 'MEDKIT', type: 'ITEM', chance: 0.3 },
+            { code: 'USP', type: 'WEAPON', chance: 0.05 } 
+        ]
+    },
+    SPRINTER: { 
+        name: "Zombie Phóng Xạ", hp: 40, enemy_weapon: 'ZOMBIE_HAND2', avatar: 'https://i.ibb.co/C3gF6N29/Sprinter.png',
+        // Tỉ lệ rơi đồ: 30% ra máu, 5% ra súng lục
+        loot_table: [
+            { code: 'MEDKIT', type: 'ITEM', chance: 0.3 },
+            { code: 'USP', type: 'WEAPON', chance: 0.05 } 
+        ]
+    },
+    BOSS_TRAINING: { 
+        name: "BIẾN THỂ X", hp: 300, enemy_weapon: 'BOSS_HAMMER', avatar: 'https://i.ibb.co/jZwwPTWL/Goliath.png',
+        loot_table: [
+            { code: 'KEVLAR', type: 'ITEM', chance: 1.0 }, // 100% rơi giáp
+            { code: 'AK47', type: 'WEAPON', chance: 0.5 }   // 50% rơi AK47
+        ]
+    },
+    
+    // --- MAP 2 ---
+    ASSASSIN: { 
+        name: "Sát Thủ", hp: 30, enemy_weapon: 'ASSASSIN_DAGGER', avatar: 'https://i.ibb.co/vz4rn3k/assassin.png',
+        loot_table: [
+            { code: 'GRENADE', type: 'ITEM', chance: 0.25 },
+            { code: 'MP5', type: 'WEAPON', chance: 0.1 }
+        ]
+    },
+    BOSS_ABYSS: { 
+        name: "TỬ THẦN", hp: 250, enemy_weapon: 'BOSS_SNIPER', avatar: 'https://i.ibb.co/5XHMNbd/Minigun.png',
+        loot_table: [
+            { code: 'AWP', type: 'WEAPON', chance: 1.0 } // Boss xịn rơi AWP
+        ]
+    }
+};
+
+// 2. VŨ KHÍ CỦA QUÁI & BOSS (RIÊNG BIỆT - KHÔNG RƠI RA)
+export const ENEMY_WEAPONS = {
+    // -- MAP 1 --
+    ZOMBIE_HAND: { 
+        id: 'zombie_hand', name: "Cào Cấu", range: 1, damage: 15, 
+        mobility: 3, accuracy: 0.8, mag: 999, cost: 0, img: 'https://i.ibb.co/YF78HTSm/OMOH-BL-zombie-vukhi.png' 
+    },
+    ZOMBIE_HAND2: { 
+        id: 'zombie_hand2', name: "Cào Cấu", range: 1, damage: 25, 
+        mobility: 5, accuracy: 0.8, mag: 999, cost: 0, img: 'https://i.ibb.co/YF78HTSm/OMOH-BL-zombie-vukhi.png',
+        debuff: { type: 'BLEED', chance: 0.3, duration: 2, val: 3 } 
+    },
+    BOSS_HAMMER: { 
+        id: 'boss_hammer', name: "BÚA TẠ", range: 2, damage: 35, 
+        mobility: 4, accuracy: 0.9, mag: 999, cost: 0, img: 'https://i.ibb.co/fGpMt3KC/Goliath-vukhi.png', rarity: 'LEGENDARY',
+        debuff: { type: 'CRIPPLE', chance: 1.0, duration: 3 } 
+    },
+
+    // -- MAP 2 --
+    ASSASSIN_DAGGER: { 
+        id: 'assassin_dagger', name: "Dao Độc", range: 1, damage: 20, 
+        mobility: 5, accuracy: 0.95, mag: 999, cost: 0, img: '' 
+    },
+    BOSS_SNIPER: { 
+        id: 'boss_sniper', name: "TỬ THẦN", range: 8, damage: 40, 
+        mobility: 4, accuracy: 1.0, mag: 999, cost: 0, rarity: 'LEGENDARY',
+        effects: [{ code: 'WALLBANG', name: 'Xuyên Tường' }]
+    }
 };

@@ -1,6 +1,7 @@
 // js/Game.js
 import { Board } from './Board.js';
 import { Player } from './Player.js';
+import { BossManager } from './Bossmanager.js'; // <--- IMPORT BOSS MANAGER
 import { WEAPON_EFFECTS, DEBUFFS } from './data.js';
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -17,38 +18,51 @@ export class Game {
         this.validThrowCells = [];
     }
 
-    // Cập nhật tham số nhận vào: thêm viewMode
-    init(playersData, viewMode = 'pc') {
-    this.players = playersData.map(data => {
-        const p = new Player(data.id, data.name, data.color);
-        p.avatar = data.avatar;
-        return p;
-    });
+    // --- HÀM KHỞI TẠO DUY NHẤT ---
+    init(playersData, viewMode = 'pc', gameMode = 'pvp', mapId = 'training') {
+        this.gameMode = gameMode;
+        this.mapId = mapId;
+        
+        // Tạo đối tượng Player từ dữ liệu
+        this.players = playersData.map(data => {
+            const p = new Player(data.id, data.name, data.color);
+            p.avatar = data.avatar;
+            return p;
+        });
 
-    // Xử lý chế độ hiển thị
-    this.applyViewMode(viewMode);
+        // Áp dụng chế độ hiển thị (PC/Mobile)
+        this.applyViewMode(viewMode);
 
-    this.board.generateMap();
-    this.board.spawnPlayers(this.players);
+        // Tạo bản đồ
+        this.board.generateMap();
 
-    setTimeout(() => {
-        this.render(); 
-        this.setupBoardClicks();
-        this.updateHUD(); 
-    }, 100);
+        // --- PHÂN NHÁNH LOGIC ---
+        if (this.gameMode === 'boss') {
+            // Chế độ Boss: Giao quyền setup cho BossManager
+            BossManager.initMatch(this);
+        } else {
+            // Chế độ PvP: Spawn ngẫu nhiên như cũ
+            this.board.spawnPlayers(this.players);
+        }
+
+        // Render và bắt đầu
+        setTimeout(() => {
+            this.render(); 
+            this.setupBoardClicks();
+            this.updateHUD(); 
+        }, 100);
     }
 
-    // --- HÀM MỚI: ÁP DỤNG CSS ---
+    // --- XỬ LÝ GIAO DIỆN MOBILE/PC ---
     applyViewMode(mode) {
         const gameScreen = document.getElementById('game-screen');
         const boardEl = document.getElementById('game-board');
 
-        // Xóa class cũ nếu có
+        // Xóa class cũ
         gameScreen.classList.remove('mode-mobile', 'mode-pc');
         boardEl.classList.remove('board-mobile');
 
         if (mode === 'mobile') {
-            // Thêm class mobile
             gameScreen.classList.add('mode-mobile');
             boardEl.classList.add('board-mobile');
             console.log("-> Đã kích hoạt chế độ Mobile");
@@ -81,7 +95,7 @@ export class Game {
                     this.isProcessing = true; 
                     this.board.clearHighlights(); 
                     await this.animateMovement(p, path);
-                    this.checkItemPickup(p, x, y); // Kiểm tra nhặt đồ
+                    this.checkItemPickup(p, x, y);
                     p.hasMoved = true; 
                     this.state = 'IDLE';
                     this.isProcessing = false; 
@@ -109,7 +123,6 @@ export class Game {
             } else { this.exitThrowMode(); }
         }
         else if (this.state === 'SKILL_DASH_SELECT') {
-            // ... (Giữ nguyên logic Dash) ...
             const cellEl = document.querySelector(`.grid-cell[data-x="${x}"][data-y="${y}"]`);
             if (cellEl && cellEl.classList.contains('highlight-move')) {
                 const p = this.getCurrentPlayer();
@@ -140,19 +153,13 @@ export class Game {
         }
     }
 
-    // --- SỬA LẠI: LOGIC NHẶT ĐỒ (CHỈ HÒM) ---
     checkItemPickup(player, x, y) {
         const cell = this.board.grid[y][x];
-
-        // Chỉ kiểm tra hòm (INTERACT)
         if (cell.item && cell.item.type === 'INTERACT') {
-            // Truyền ID của hòm vào hàm openCrate
             const result = player.openCrate(cell.item.id);
-            
             if (result.success) {
                 const rarityType = result.loot.rarity ? `rarity-${result.loot.rarity.toLowerCase()}` : 'rarity-common';
                 cell.item = null;
-                // Board sẽ tự động sinh hòm mới khi render gọi refillCrates
                 this.render();
                 this.board.showFloatingText(player.x, player.y, `+${result.loot.name}`, rarityType);
             } else {
@@ -161,7 +168,6 @@ export class Game {
         }
     }
 
-    // --- CÁC HÀM NÉM (Giữ nguyên từ code trước) ---
     exitThrowMode() {
         this.state = 'IDLE';
         this.selectedThrowItemIndex = null;
@@ -234,6 +240,11 @@ export class Game {
                 if (item.damage > 0) {
                     const result = targetPlayer.takeDamage(item.damage, false, true); 
                     this.board.showFloatingText(targetPlayer.x, targetPlayer.y, `-${result.taken}`, "damage");
+                    
+                    // Kiểm tra chết do nổ
+                    if (!targetPlayer.isAlive && this.gameMode === 'boss') {
+                        BossManager.checkEnemyDeath(targetPlayer);
+                    }
                 }
                 if (item.debuff && Math.random() <= item.debuff.chance) {
                     const debuffResultMsg = targetPlayer.applyDebuff(item.debuff);
@@ -255,8 +266,6 @@ export class Game {
         this.state = 'IDLE'; 
     }
 
-
-    // --- LOGIC DI CHUYỂN (Giữ nguyên) ---
     startMovePhase() {
         const p = this.getCurrentPlayer();
         
@@ -280,7 +289,6 @@ export class Game {
         this.board.highlightCells(this.validMoves, 'move');
     }
 
-    // ... (Giữ nguyên calculateValidMoves, findPath, animateMovement) ...
     calculateValidMoves(player) {
         const startNode = { x: player.x, y: player.y, dist: 0 };
         const queue = [startNode];
@@ -379,7 +387,6 @@ export class Game {
         }
     }
 
-    // --- LOGIC TẤN CÔNG (Giữ nguyên) ---
     startAttackPhase() {
         const p = this.getCurrentPlayer();
         if (this.isProcessing) return;
@@ -389,6 +396,7 @@ export class Game {
             return;
         }
 
+        // --- SỬA LỖI id2 -> id ---
         if (p.weapon.id2 === 'knife') {
             if (p.meleeAttacksLeft <= 0) {
                 this.board.showFloatingText(p.x, p.y, "Hết thể lực!", "miss");
@@ -420,12 +428,12 @@ export class Game {
         this.board.highlightCells(validDirs, 'attack-dir'); 
     }
 
-    // ... (Giữ nguyên fireInDirection, applyKnockback) ...
     async fireInDirection(attacker, dx, dy) {
         this.isProcessing = true;
         this.board.clearHighlights();
         attacker.hasAttacked = true;
         
+        // --- SỬA LỖI id2 -> id ---
         if (attacker.weapon.id2 === 'knife') {
             attacker.meleeAttacksLeft--;
         } else {
@@ -467,6 +475,7 @@ export class Game {
         if (target) {
             const w = attacker.weapon;
             const roll = Math.random();
+            // --- SỬA LỖI id2 -> id ---
             const hitThreshold = w.id2 === 'knife' ? 1.0 : attacker.getAccuracy();
 
             if (roll <= hitThreshold) {
@@ -519,6 +528,11 @@ export class Game {
                     setTimeout(() => {
                         this.board.showFloatingText(target.x, target.y, "HẠ GỤC!", "crit");
                     }, 500);
+
+                    // --- KÍCH HOẠT CHECK KILL CHO BOSS MANAGER ---
+                    if (this.gameMode === 'boss') {
+                        BossManager.checkEnemyDeath(target);
+                    }
                 }
             } else {
                 this.board.showFloatingText(target.x, target.y, "Trượt!", "miss");
@@ -528,6 +542,7 @@ export class Game {
 
         this.isProcessing = false;
         
+        // --- SỬA LỖI id2 -> id ---
         const canAttackMore = (attacker.weapon.id2 === 'knife' && attacker.meleeAttacksLeft > 0) || 
                               (attacker.weapon.id2 !== 'knife' && attacker.weapon.mag >= attacker.weapon.cost);
         
@@ -557,7 +572,6 @@ export class Game {
         }
     }
 
-    // --- (Giữ nguyên activateSkill, highlightDashTargets) ---
     activateSkill(skillCode) {
         const p = this.getCurrentPlayer();
         
@@ -622,39 +636,36 @@ export class Game {
         }
     }
 
-    // --- HÀM XỬ LÝ NHẶT VẬT PHẨM (Giữ nguyên) ---
-    checkItemPickup(player, x, y) {
-        const cell = this.board.grid[y][x];
+    getValidThrowCells(player, maxRange) {
+        const validCells = [];
+        const grid = this.board.grid;
 
-        // Kiểm tra xem ô có ITEM không (Các loại hòm đều là type INTERACT trong item)
-        if (cell.item && cell.item.type === 'INTERACT') {
-            // Gọi hàm mở hòm với ID của hòm (crate_weapon, crate_ammo, crate_supply)
-            const result = player.openCrate(cell.item.id);
-            
-            if (result.success) {
-                const rarityType = result.loot.rarity 
-                    ? `rarity-${result.loot.rarity.toLowerCase()}` 
-                    : 'rarity-common';
+        for (let y = 0; y < this.board.rows; y++) {
+            for (let x = 0; x < this.board.cols; x++) {
+                // Tính khoảng cách
+                const dist = Math.sqrt(Math.pow(x - player.x, 2) + Math.pow(y - player.y, 2));
 
-                // Xóa hòm khỏi bản đồ
-                cell.item = null;
-                
-                // Vẽ lại để thấy hòm biến mất và hiện thông báo
-                this.render();
+                if (dist <= maxRange) {
+                    // ĐIỀU KIỆN 1: Ô đích KHÔNG được là tường
+                    if (grid[y][x].type === 'wall') continue;
 
-                this.board.showFloatingText(
-                    player.x, player.y, 
-                    `+${result.loot.name}`, rarityType
-                );
-            } else {
-                this.board.showFloatingText(player.x, player.y, result.msg, "miss");
+                    // ĐIỀU KIỆN 2: Ô đích KHÔNG được có bất kỳ ai (Người hoặc Quái) đứng
+                    const isOccupied = this.players.some(p => p.isAlive && p.x === x && p.y === y);
+                    if (isOccupied) continue;
+
+                    // ĐIỀU KIỆN 3: Đường bay không bị chặn (Gọi hàm checkLineOfSight vừa viết)
+                    // Lưu ý: Chỉ check đường bay nếu không phải là vị trí đứng của mình
+                    if (dist > 0 && !this.checkLineOfSight(player.x, player.y, x, y)) {
+                        continue; // Bị chặn đường -> Bỏ qua
+                    }
+
+                    validCells.push({ x, y });
+                }
             }
         }
-        
-        // Đã xóa hoàn toàn logic check cell.powerup
+        return validCells;
     }
 
-    // ... (Giữ nguyên getCurrentPlayer, nextTurn, render) ...
     getCurrentPlayer() {
         return this.players[this.currentPlayerIndex];
     }
@@ -673,7 +684,16 @@ export class Game {
         const nextPlayer = this.getCurrentPlayer();
         nextPlayer.resetTurn(); 
         
+        // Gọi hàm bên main.js để làm mờ nút nếu là lượt AI
+        if (window.updateControlVisuals) {
+            window.updateControlVisuals();
+        }
+        
         this.exitThrowMode(); // Reset trạng thái khi qua lượt
+
+        if (this.gameMode === 'boss') {
+        BossManager.handleTurnStart(); // <--- Dòng này kích hoạt bộ đếm ++
+        }
         
         const effectResult = nextPlayer.processStartTurnEffects(); 
 
@@ -700,6 +720,16 @@ export class Game {
 
         this.updateHUD();
         this.board.showFloatingText(nextPlayer.x, nextPlayer.y, "Lượt của bạn!", "info");
+
+        // --- GỌI AI NẾU LÀ MÁY ---
+        if (nextPlayer.isAI) {
+            await sleep(800);
+            if (this.gameMode === 'boss') {
+                await BossManager.runAI(nextPlayer); 
+            } else {
+                // Logic bot thường (chưa có)
+            }
+        }
     }
 
     render() {
@@ -707,7 +737,6 @@ export class Game {
         this.board.render(boardElement, this.players);
     }
 
-    // ... (Giữ nguyên updateHUD) ...
     updateHUD() {
         const p = this.getCurrentPlayer();
         const w = p.weapon;
@@ -760,6 +789,7 @@ export class Game {
         document.getElementById('hud-weapon-img').src = w.img;
         
         const ammoEl = document.getElementById('hud-weapon-ammo');
+        // --- SỬA LỖI id2 -> id ---
         if (w.id2 === 'knife') {
              ammoEl.innerText = `${p.meleeAttacksLeft} Lượt`;
              ammoEl.parentElement.style.color = '#f39c12';
@@ -795,7 +825,6 @@ export class Game {
         }
     }
 
-    // --- CẬP NHẬT LOGIC MỞ TÚI ĐỒ ĐỂ XỬ LÝ NÉM ---
     openInventory() {
         const p = this.getCurrentPlayer();
         const listEl = document.getElementById('inventory-list');
@@ -812,7 +841,6 @@ export class Game {
             let displayIcon = item.icon || `<img src="${item.img}">`;
             const rarityClass = item.rarity ? `rarity-${item.rarity.toLowerCase()}` : 'rarity-common';
     
-            // Xác định tên nút bấm dựa trên loại vật phẩm
             let actionBtnLabel = 'Dùng';
             if (item.type === 'WEAPON') actionBtnLabel = 'Trang bị';
             if (item.type === 'THROWABLE') actionBtnLabel = 'Ném';
@@ -832,17 +860,15 @@ export class Game {
             btn.addEventListener('click', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
                 const result = p.useOrEquipItem(idx); 
-        
+                
                 if (result.success) {
-                    // --- TRƯỜNG HỢP ĐẶC BIỆT: CHUYỂN CHẾ ĐỘ NÉM ---
                     if (result.type === 'THROW_MODE_INIT') {
-                        document.getElementById('modal-inventory').classList.add('hidden'); // Đóng túi đồ
-                        this.enterThrowMode(result.itemIndex); // Kích hoạt chế độ ném trong Game controller
-                    } 
-                    // Trường hợp dùng item thường (máu, giáp, trang bị súng)
-                    else {
+                        document.getElementById('modal-inventory').classList.add('hidden');
+                        this.enterThrowMode(result.itemIndex);
+                    } else {
                         let type = result.type || 'info';
-                        if(type === 'armor') type = 'info'; 
+                        if(type === 'armor') type = 'info';
+                        
                         this.board.showFloatingText(p.x, p.y, result.msg, type);
                         this.updateHUD();
                         this.openInventory(); 
@@ -854,7 +880,6 @@ export class Game {
             });
         });
 
-        // (Giữ nguyên logic nút xóa)
         document.querySelectorAll('.btn-drop').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const idx = parseInt(e.target.dataset.idx);
@@ -866,11 +891,39 @@ export class Game {
         });
     }
 
-    // ... (Giữ nguyên showWeaponDetails) ...
+    // Kiểm tra xem đường thẳng từ A đến B có bị chặn bởi Tường hoặc Người chơi/Quái không
+    checkLineOfSight(x1, y1, x2, y2) {
+        // Thuật toán Bresenham cơ bản để check từng ô trên đường đi
+        let x = x1, y = y1;
+        const dx = Math.abs(x2 - x1), dy = Math.abs(y2 - y1);
+        const sx = (x1 < x2) ? 1 : -1;
+        const sy = (y1 < y2) ? 1 : -1;
+        let err = dx - dy;
+
+        while (true) {
+            // Nếu đã đến ô đích -> Dừng check (ô đích sẽ được check riêng ở logic khác)
+            if (x === x2 && y === y2) return true;
+
+            // Nếu KHÔNG phải ô xuất phát (x1,y1) -> Kiểm tra xem có vật cản không
+            if (x !== x1 || y !== y1) {
+                // 1. Check Tường
+                if (this.board.grid[y][x].type === 'wall') return false; 
+            
+                // 2. Check Người/Quái chặn đường
+                const hasEntity = this.players.some(p => p.x === x && p.y === y && p.isAlive);
+                if (hasEntity) return false;
+            }
+
+            const e2 = 2 * err;
+            if (e2 > -dy) { err -= dy; x += sx; }
+            if (e2 < dx) { err += dx; y += sy; }
+        }
+    }
+
     showWeaponDetails() {
         const p = this.getCurrentPlayer();
         const w = p.weapon;
-        
+
         const nameEl = document.getElementById('info-weapon-name');
         nameEl.innerText = w.name;
         nameEl.className = w.rarity ? `rarity-${w.rarity.toLowerCase()}` : 'rarity-common';
@@ -909,7 +962,7 @@ export class Game {
             if (content === '') content = '<span style="color: #777; font-style: italic;">Không có hiệu ứng đặc biệt.</span>';
             effectsEl.innerHTML = content;
         }
-
         document.getElementById('modal-weapon-info').classList.remove('hidden');
     }
 }
+
